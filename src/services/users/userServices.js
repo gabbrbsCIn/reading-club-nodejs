@@ -41,7 +41,6 @@ const userAuthenticate = async (data) => {
 const generateJWTToken = (user) => {
   const payload = { id: user.id };
   const secretKey = process.env.JWT_SECRET_KEY;
-  console.log(process.env.JWT_EXPIRES_IN);
   const options = {
     expiresIn: process.env.JWT_EXPIRES_IN,
   };
