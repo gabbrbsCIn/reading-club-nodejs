@@ -1,5 +1,12 @@
-const { ValidationError, AuthenticationError } = require("../../errors/errors");
+require("dotenv").config();
+
+const {
+  ValidationError,
+  AuthenticationError,
+  AuthorizationError,
+} = require("../../errors/errors");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const validateDataRequest = (userData, method) => {
   if (
@@ -26,4 +33,21 @@ const verifyPassword = async (inputPassword, rightPassword) => {
   }
   return isPasswordValid;
 };
-module.exports = { validateDataRequest, generateHashPassword, verifyPassword };
+
+const verifyJWTToken = (token) => {
+  const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
+  const decodeToken = jwt.verify(token, JWT_SECRET_KEY, (error, decoded) => {
+    if (error) {
+      throw new AuthorizationError(error.message);
+    }
+    return decoded;
+  });
+  return decodeToken;
+};
+
+module.exports = {
+  validateDataRequest,
+  generateHashPassword,
+  verifyPassword,
+  verifyJWTToken,
+};
