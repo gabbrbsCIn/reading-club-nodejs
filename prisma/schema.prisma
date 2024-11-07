@@ -19,7 +19,7 @@ model User {
   username  String       @unique
   email     String       @unique
   password  String
-  clubs     Club[]       @relation("UserClubs")
+  clubs     UserClub[]
   reviews   Review[]
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
@@ -29,10 +29,21 @@ model Club {
   id           String       @id @default(uuid())
   name         String
   description  String?
-  users        User[]       @relation("UserClubs")
+  users        UserClub[]
   readingLists ReadingList[]
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
+}
+
+model UserClub {
+  userId String
+  clubId String
+
+  user User @relation(fields: [userId], references: [id])
+  club Club @relation(fields: [clubId], references: [id])
+
+  @@id([userId, clubId]) 
+  @@unique([userId, clubId]) 
 }
 
 model ReadingList {
