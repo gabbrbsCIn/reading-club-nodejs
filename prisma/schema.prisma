@@ -19,7 +19,7 @@ model User {
   username  String       @unique
   email     String       @unique
   password  String
-  clubs     Club[]       @relation("UserClubs")
+  clubs     UserClub[]
   reviews   Review[]
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
@@ -29,10 +29,21 @@ model Club {
   id           String       @id @default(uuid())
   name         String
   description  String?
-  users        User[]       @relation("UserClubs")
+  users        UserClub[]
   readingLists ReadingList[]
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
+}
+
+model UserClub {
+  userId String
+  clubId String
+
+  user User @relation(fields: [userId], references: [id])
+  club Club @relation(fields: [clubId], references: [id])
+
+  @@id([userId, clubId]) 
+  @@unique([userId, clubId]) 
 }
 
 model ReadingList {
@@ -40,7 +51,7 @@ model ReadingList {
   name      String
   club      Club           @relation(fields: [clubId], references: [id])
   clubId    String
-  books     Book[]         @relation("ReadingListBooks")
+  books     ReadingListBook[]
   createdAt DateTime       @default(now())
   updatedAt DateTime       @updatedAt
 }
@@ -49,10 +60,20 @@ model Book {
   id           String         @id @default(uuid())
   title        String
   author       String
-  readingLists ReadingList[]  @relation("ReadingListBooks")
+  readingLists ReadingListBook[]
   reviews      Review[]
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
+}
+
+model ReadingListBook {
+  readingListId String
+  bookId        String
+  status        String 
+  readingList ReadingList @relation(fields: [readingListId], references: [id])
+  book        Book        @relation(fields: [bookId], references: [id])
+
+  @@id([readingListId, bookId]) 
 }
 
 model Review {
