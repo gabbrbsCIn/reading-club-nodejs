@@ -3,7 +3,11 @@ const {
   sendSuccessResponse,
 } = require("../../utils/messages/messages");
 
-const { createClub } = require("../../services/clubs/clubServices");
+const {
+  createClub,
+  findClubById,
+  JoinAUserToClub,
+} = require("../../services/clubs/clubServices");
 
 const {
   validateClubDataRequest,
@@ -22,6 +26,22 @@ const register = async (req, res) => {
   }
 };
 
+const joinClub = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const clubId = req.params.id;
+    await findClubById(clubId);
+
+    await JoinAUserToClub(userId, clubId);
+
+    sendSuccessResponse(res, { message: "Usuário cadastrado no clube" });
+  } catch (error) {
+    console.log(error);
+    sendErrorResponse(res, error);
+  }
+};
+
 module.exports = {
   register,
+  joinClub,
 };
