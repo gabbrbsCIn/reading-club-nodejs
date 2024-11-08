@@ -39,4 +39,22 @@ const updateReadingList = async (list, listId) => {
   });
   return readingList;
 };
-module.exports = { createReadingList, findClubIdByListId, updateReadingList };
+
+const deleteReadingList = async (listId) => {
+  const readingList = await prisma.readingList.delete({
+    where: {
+      id: listId,
+    },
+    select: {
+      name: true,
+    },
+  });
+
+  return readingList;
+};
+module.exports = {
+  createReadingList,
+  findClubIdByListId,
+  updateReadingList,
+  deleteReadingList,
+};
