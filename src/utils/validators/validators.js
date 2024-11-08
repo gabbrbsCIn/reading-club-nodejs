@@ -18,6 +18,9 @@ const validateDataRequest = (userData, method) => {
   if (method == "login" && (!userData.email || !userData.password)) {
     throw new ValidationError("Dados não preenchidos ou incompletos");
   }
+  if (method == "update" && (!userData.email || !userData.username)) {
+    throw new ValidationError("Dados não preenchidos ou incompletos");
+  }
   return true;
 };
 
@@ -34,20 +37,36 @@ const verifyPassword = async (inputPassword, rightPassword) => {
   return isPasswordValid;
 };
 
-const verifyJWTToken = (token) => {
-  const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
-  const decodeToken = jwt.verify(token, JWT_SECRET_KEY, (error, decoded) => {
-    if (error) {
-      throw new AuthorizationError(error.message);
-    }
-    return decoded;
-  });
-  return decodeToken;
+const validateClubDataRequest = (data) => {
+  if (!data.name) {
+    throw new ValidationError("Nome não inserido");
+  }
+  if (!data.description) {
+    return { name: data.name };
+  }
+
+  return { name: data.name, description: data.description };
+};
+
+const validateListDataRequest = (data) => {
+  if (!data.name) {
+    throw new ValidationError("Dados não preenchidos ou incompletos");
+  }
+  return true;
+};
+
+const validateBookDataRequest = (data) => {
+  if (!data.title || !data.author) {
+    throw new ValidationError("Dados não preenchidos ou incompletos");
+  } 
+  return true;
 };
 
 module.exports = {
   validateDataRequest,
   generateHashPassword,
   verifyPassword,
-  verifyJWTToken,
+  validateClubDataRequest,
+  validateListDataRequest,
+  validateBookDataRequest
 };

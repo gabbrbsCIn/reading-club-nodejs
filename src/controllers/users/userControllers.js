@@ -6,15 +6,21 @@ const {
 const {
   createUser,
   userAuthenticate,
-  generateJWTToken,
+  updateUserById,
+  deleteUserById,
 } = require("../../services/users/userServices");
+
+const { generateJWTToken } = require("../../utils/token/token");
 
 const register = async (req, res) => {
   try {
     const userData = req.body;
     validateDataRequest(userData, "register");
     const user = await createUser(userData);
-    const response = { data: user, message: "Usuário criado com sucesso" };
+    const response = {
+      data: user.email,
+      message: "Usuário criado com sucesso",
+    };
     sendSuccessResponse(res, response);
   } catch (error) {
     console.log(error);
@@ -36,7 +42,40 @@ const login = async (req, res) => {
   }
 };
 
+const update = async (req, res) => {
+  try {
+    const userData = req.body;
+    const userId = req.user.id;
+    validateDataRequest(userData, "update");
+    const user = await updateUserById(userData, userId);
+    const response = {
+      data: user.email,
+      message: "Dados do usuário editados com sucesso0",
+    };
+    sendSuccessResponse(res, response);
+  } catch (error) {
+    console.log(error);
+    sendErrorResponse(res, error);
+  }
+};
+
+const destroy = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    await deleteUserById(userId);
+    const response = {
+      message: "Usuário deletado com sucesso",
+    };
+    sendSuccessResponse(res, response);
+  } catch (error) {
+    console.log(error);
+    sendErrorResponse(res, error);
+  }
+};
+
 module.exports = {
   register,
   login,
+  update,
+  destroy,
 };

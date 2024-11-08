@@ -1,6 +1,10 @@
 require("dotenv").config();
 const prisma = require("../../../prisma/prismaClient");
-const { NotFoundError } = require("../../errors/errors");
+const {
+  NotFoundError,
+  AuthorizationError,
+  ValidationError,
+} = require("../../errors/errors");
 const {
   generateHashPassword,
   verifyPassword,
@@ -9,15 +13,19 @@ const {
 const jwt = require("jsonwebtoken");
 
 const createUser = async (data) => {
+  const user = await findUserByEmail(data.email);
+  if (user) {
+    throw new ValidationError("E-mail ou username já cadastrados");
+  }
   const hashedPassword = await generateHashPassword(data.password);
-  const user = await prisma.user.create({
+  const userData = await prisma.user.create({
     data: {
       username: data.username,
       password: hashedPassword,
       email: data.email,
     },
   });
-  return user.email;
+  return userData;
 };
 
 const findUserByEmail = async (email) => {
@@ -38,19 +46,30 @@ const userAuthenticate = async (data) => {
   return user;
 };
 
-const generateJWTToken = (user) => {
-  const payload = { id: user.id };
-  const secretKey = process.env.JWT_SECRET_KEY;
-  const options = {
-    expiresIn: process.env.JWT_EXPIRES_IN,
-  };
+const updateUserById = async (data, userId) => {
+  const user = await prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: data,
+  });
 
-  const token = jwt.sign(payload, secretKey, options);
-  return token;
+  return user;
 };
+
+const deleteUserById = async (userId) => {
+  const user = await prisma.user.delete({
+    where: {
+      id: userId,
+    },
+  });
+  return user;
+};
+
 module.exports = {
   createUser,
   userAuthenticate,
   findUserByEmail,
-  generateJWTToken,
+  updateUserById,
+  deleteUserById,
 };
