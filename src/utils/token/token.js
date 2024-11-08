@@ -1,4 +1,5 @@
 const { AuthorizationError } = require("../../errors/errors");
+const jwt = require("jsonwebtoken");
 
 const extractTokenFromBearer = (token) => {
   if (token.startsWith("Bearer ")) {
