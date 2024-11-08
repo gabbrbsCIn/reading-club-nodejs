@@ -1,6 +1,6 @@
 require("dotenv").config();
 const prisma = require("../../../prisma/prismaClient");
-const { NotFoundError } = require("../../errors/errors");
+const { NotFoundError, AuthorizationError } = require("../../errors/errors");
 const {
   generateHashPassword,
   verifyPassword,
@@ -17,7 +17,7 @@ const createUser = async (data) => {
       email: data.email,
     },
   });
-  return user.email;
+  return user;
 };
 
 const findUserByEmail = async (email) => {
@@ -38,9 +38,20 @@ const userAuthenticate = async (data) => {
   return user;
 };
 
+const updateUserById = async (data, userId) => {
+  const user = await prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: data,
+  });
+  
+  return user;
+};
 
 module.exports = {
   createUser,
   userAuthenticate,
   findUserByEmail,
+  updateUserById,
 };

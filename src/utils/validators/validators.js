@@ -18,6 +18,9 @@ const validateDataRequest = (userData, method) => {
   if (method == "login" && (!userData.email || !userData.password)) {
     throw new ValidationError("Dados não preenchidos ou incompletos");
   }
+  if (method == "update" && (!userData.email || !userData.username)) {
+    throw new ValidationError("Dados não preenchidos ou incompletos");
+  }
   return true;
 };
 
@@ -33,7 +36,6 @@ const verifyPassword = async (inputPassword, rightPassword) => {
   }
   return isPasswordValid;
 };
-
 
 module.exports = {
   validateDataRequest,
