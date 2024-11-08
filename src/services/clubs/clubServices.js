@@ -44,9 +44,21 @@ const findUserClubById = async (userId, clubId) => {
   }
 };
 
+const updateClub = async (clubData, clubId) => {
+  const club = await prisma.club.update({
+    where: {
+      id: clubId,
+    },
+    data: clubData,
+  });
+
+  return club;
+};
+
 module.exports = {
   createClub,
   findClubById,
   JoinAUserToClub,
   findUserClubById,
+  updateClub,
 };
