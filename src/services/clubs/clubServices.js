@@ -55,10 +55,21 @@ const updateClub = async (clubData, clubId) => {
   return club;
 };
 
+const deleteClubById = async (clubId) => {
+  const club = await prisma.club.delete({
+    where: {
+      id: clubId,
+    },
+  });
+
+  return club;
+};
+
 module.exports = {
   createClub,
   findClubById,
   JoinAUserToClub,
   findUserClubById,
   updateClub,
+  deleteClubById,
 };
