@@ -1,5 +1,5 @@
 const {
-  createReadingList,
+  createReadingList, updateReadingList,
 } = require("../../services/readingLists/readingListServices");
 const {
   sendSuccessResponse,
@@ -26,4 +26,22 @@ const register = async (req, res) => {
   }
 };
 
-module.exports = { register };
+const update = async (req, res) => {
+  try {
+    const listData = req.body;
+    const listId = req.params.id;
+    validateListDataRequest(listData);
+    const readingList = await updateReadingList(listData, listId);
+
+    const response = {
+      data: readingList,
+      message: "Lista de Leitura atualizada com sucesso",
+    };
+    sendSuccessResponse(res, response);
+  } catch (error) {
+    console.log(error);
+    sendErrorResponse(res, error);
+  }
+};
+
+module.exports = { register, update };
