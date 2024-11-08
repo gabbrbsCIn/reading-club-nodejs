@@ -14,7 +14,7 @@ const register = async (req, res) => {
     const book = await createBook(bookData);
     const response = {
       data: book.id,
-      message: "Livro adicionado na base de dados",
+      message: "Livro adicionado à base de dados",
     };
     sendSuccessResponse(res, response);
   } catch (error) {

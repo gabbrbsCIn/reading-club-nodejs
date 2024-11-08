@@ -1,4 +1,8 @@
 const {
+  findBookById,
+  addBookToList,
+} = require("../../services/books/bookServices");
+const {
   createReadingList,
   updateReadingList,
   deleteReadingList,
@@ -61,4 +65,21 @@ const destroy = async (req, res) => {
   }
 };
 
-module.exports = { register, update, destroy };
+const addBook = async (req, res) => {
+  try {
+    const listId = req.params.id;
+    const bookId = req.params.bookId;
+    await findBookById(bookId);
+
+    await addBookToList(listId, bookId);
+    sendSuccessResponse(res, {
+      message: "Livro adicionado à lista com sucesso",
+    });
+  } catch (error) {
+    console.log(error);
+    sendErrorResponse(res, error);
+  }
+};
+
+
+module.exports = { register, update, destroy, addBook };
