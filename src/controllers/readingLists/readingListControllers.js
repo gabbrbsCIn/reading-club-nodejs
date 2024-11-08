@@ -1,6 +1,7 @@
 const {
   findBookById,
   addBookToList,
+  deleteBookFromAList,
 } = require("../../services/books/bookServices");
 const {
   createReadingList,
@@ -81,5 +82,19 @@ const addBook = async (req, res) => {
   }
 };
 
+const deleteBook = async (req, res) => {
+  try {
+    const listId = req.params.id;
+    const bookId = req.params.bookId;
+    await findBookById(bookId);
+    const bookList = await deleteBookFromAList(listId, bookId);
 
-module.exports = { register, update, destroy, addBook };
+    const response = { data: bookList, message: "Livro deletado da lista" };
+    sendSuccessResponse(res, response);
+  } catch (error) {
+    console.log(error);
+    sendErrorResponse(res, error);
+  }
+};
+
+module.exports = { register, update, destroy, addBook, deleteBook };
