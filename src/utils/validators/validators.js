@@ -37,8 +37,20 @@ const verifyPassword = async (inputPassword, rightPassword) => {
   return isPasswordValid;
 };
 
+const validateClubDataRequest = (data) => {
+  if (!data.name) {
+    throw new ValidationError("Nome não inserido");
+  }
+  if (!data.description) {
+    return { name: data.name };
+  }
+
+  return { name: data.name, description: data.description };
+};
+
 module.exports = {
   validateDataRequest,
   generateHashPassword,
   verifyPassword,
+  validateClubDataRequest,
 };
