@@ -58,7 +58,7 @@ const validateListDataRequest = (data) => {
 const validateBookDataRequest = (data) => {
   if (!data.title || !data.author) {
     throw new ValidationError("Dados não preenchidos ou incompletos");
-  }
+  } 
   return true;
 };
 
