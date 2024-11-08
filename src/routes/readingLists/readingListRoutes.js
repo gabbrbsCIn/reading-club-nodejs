@@ -15,5 +15,11 @@ router.post(
   readingListController.register
 );
 router.put("/list/:id", authToken, isListJoined, readingListController.update);
+router.delete(
+  "/list/:id",
+  authToken,
+  isListJoined,
+  readingListController.destroy
+);
 
 module.exports = router;
