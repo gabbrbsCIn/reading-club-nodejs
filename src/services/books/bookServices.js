@@ -23,11 +23,33 @@ const addBookToList = async (listId, bookId) => {
     data: {
       readingListId: listId,
       bookId: bookId,
-      status: "to-read"
+      status: "to-read",
     },
   });
 
   return bookList;
 };
 
-module.exports = { createBook, findBookById, addBookToList };
+const deleteBookFromAList = async (listId, bookId) => {
+  const bookList = await prisma.readingListBook.delete({
+    where: {
+      readingListId_bookId: {
+        readingListId: listId,
+        bookId: bookId,
+      },
+    },
+  });
+
+  if (!bookList) {
+    throw new NotFoundError("O livro não está na lista");
+  }
+
+  return bookList;
+};
+
+module.exports = {
+  createBook,
+  findBookById,
+  addBookToList,
+  deleteBookFromAList,
+};
