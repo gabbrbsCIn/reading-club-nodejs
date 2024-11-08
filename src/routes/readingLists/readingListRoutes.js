@@ -14,6 +14,14 @@ router.post(
   isClubJoined,
   readingListController.register
 );
+
+router.post(
+  "/list/:id/book/:bookId",
+  authToken,
+  isListJoined,
+  readingListController.addBook
+);
+
 router.put("/list/:id", authToken, isListJoined, readingListController.update);
 router.delete(
   "/list/:id",
