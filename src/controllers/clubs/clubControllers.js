@@ -8,6 +8,7 @@ const {
   findClubById,
   JoinAUserToClub,
   updateClub,
+  deleteClubById,
 } = require("../../services/clubs/clubServices");
 
 const {
@@ -17,8 +18,8 @@ const {
 const register = async (req, res) => {
   try {
     const clubData = req.body;
-    const club = validateClubDataRequest(clubData);
-    await createClub(club);
+    const data = validateClubDataRequest(clubData);
+   const club = await createClub(data);
     const response = { data: club, message: "Clube criado com sucesso" };
     sendSuccessResponse(res, response);
   } catch (error) {
@@ -57,8 +58,21 @@ const update = async (req, res) => {
   }
 };
 
+const destroy = async (req, res) => {
+  try {
+    const clubId = req.params.id;
+    const club = await deleteClubById(clubId);
+    const response = { data: club, message: "Clube deletado com sucesso" };
+    sendSuccessResponse(res, response);
+  } catch (error) {
+    console.log(error);
+    sendErrorResponse(res, error);
+  }
+};
+
 module.exports = {
   register,
   joinClub,
   update,
+  destroy,
 };
