@@ -7,6 +7,7 @@ const {
   createClub,
   findClubById,
   JoinAUserToClub,
+  updateClub,
 } = require("../../services/clubs/clubServices");
 
 const {
@@ -41,7 +42,23 @@ const joinClub = async (req, res) => {
   }
 };
 
+const update = async (req, res) => {
+  try {
+    const clubId = req.params.id;
+    const clubData = req.body;
+    const data = validateClubDataRequest(clubData);
+    await updateClub(data, clubId);
+
+    const response = { data: data, message: "Dados do clube editados" };
+    sendSuccessResponse(res, response);
+  } catch (error) {
+    console.log(error);
+    sendErrorResponse(res, error);
+  }
+};
+
 module.exports = {
   register,
   joinClub,
+  update,
 };
