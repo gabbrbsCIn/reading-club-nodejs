@@ -7,6 +7,7 @@ const {
   createUser,
   userAuthenticate,
   updateUserById,
+  deleteUserById,
 } = require("../../services/users/userServices");
 
 const { generateJWTToken } = require("../../utils/token/token");
@@ -58,8 +59,23 @@ const update = async (req, res) => {
   }
 };
 
+const destroy = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    await deleteUserById(userId);
+    const response = {
+      message: "Usuário deletado com sucesso",
+    };
+    sendSuccessResponse(res, response);
+  } catch (error) {
+    console.log(error);
+    sendErrorResponse(res, error);
+  }
+};
+
 module.exports = {
   register,
   login,
   update,
+  destroy,
 };
