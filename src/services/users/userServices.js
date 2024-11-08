@@ -38,19 +38,9 @@ const userAuthenticate = async (data) => {
   return user;
 };
 
-const generateJWTToken = (user) => {
-  const payload = { id: user.id };
-  const secretKey = process.env.JWT_SECRET_KEY;
-  const options = {
-    expiresIn: process.env.JWT_EXPIRES_IN,
-  };
 
-  const token = jwt.sign(payload, secretKey, options);
-  return token;
-};
 module.exports = {
   createUser,
   userAuthenticate,
   findUserByEmail,
-  generateJWTToken,
 };
