@@ -48,9 +48,17 @@ const validateClubDataRequest = (data) => {
   return { name: data.name, description: data.description };
 };
 
+const validateListDataRequest = (data) => {
+  if (!data.name) {
+    throw new ValidationError("Dados não preenchidos ou incompletos");
+  }
+  return true;
+};
+
 module.exports = {
   validateDataRequest,
   generateHashPassword,
   verifyPassword,
   validateClubDataRequest,
+  validateListDataRequest,
 };
