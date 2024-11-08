@@ -1,6 +1,10 @@
 require("dotenv").config();
 const prisma = require("../../../prisma/prismaClient");
-const { NotFoundError, AuthorizationError } = require("../../errors/errors");
+const {
+  NotFoundError,
+  AuthorizationError,
+  ValidationError,
+} = require("../../errors/errors");
 const {
   generateHashPassword,
   verifyPassword,
@@ -9,15 +13,19 @@ const {
 const jwt = require("jsonwebtoken");
 
 const createUser = async (data) => {
+  const user = await findUserByEmail(data.email);
+  if (user) {
+    throw new ValidationError("E-mail ou username já cadastrados");
+  }
   const hashedPassword = await generateHashPassword(data.password);
-  const user = await prisma.user.create({
+  const userData = await prisma.user.create({
     data: {
       username: data.username,
       password: hashedPassword,
       email: data.email,
     },
   });
-  return user;
+  return userData;
 };
 
 const findUserByEmail = async (email) => {
@@ -45,7 +53,7 @@ const updateUserById = async (data, userId) => {
     },
     data: data,
   });
-  
+
   return user;
 };
 
