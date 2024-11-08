@@ -55,10 +55,18 @@ const validateListDataRequest = (data) => {
   return true;
 };
 
+const validateBookDataRequest = (data) => {
+  if (!data.title || !data.author) {
+    throw new ValidationError("Dados não preenchidos ou incompletos");
+  }
+  return true;
+};
+
 module.exports = {
   validateDataRequest,
   generateHashPassword,
   verifyPassword,
   validateClubDataRequest,
   validateListDataRequest,
+  validateBookDataRequest
 };
