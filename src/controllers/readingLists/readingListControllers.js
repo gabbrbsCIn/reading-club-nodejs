@@ -1,5 +1,7 @@
 const {
-  createReadingList, updateReadingList,
+  createReadingList,
+  updateReadingList,
+  deleteReadingList,
 } = require("../../services/readingLists/readingListServices");
 const {
   sendSuccessResponse,
@@ -44,4 +46,19 @@ const update = async (req, res) => {
   }
 };
 
-module.exports = { register, update };
+const destroy = async (req, res) => {
+  try {
+    const listId = req.params.id;
+    const readingList = await deleteReadingList(listId);
+    const response = {
+      data: readingList,
+      message: "Lista deletada com sucesso",
+    };
+    sendSuccessResponse(res, response);
+  } catch (error) {
+    console.log(error);
+    sendErrorResponse(res, error);
+  }
+};
+
+module.exports = { register, update, destroy };
