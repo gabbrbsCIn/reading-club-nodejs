@@ -1,5 +1,5 @@
 const prisma = require("../../../prisma/prismaClient");
-const { NotFoundError } = require("../../errors/errors");
+const { NotFoundError, AuthorizationError } = require("../../errors/errors");
 
 const createClub = async (data) => {
   const club = await prisma.club.create({ data: data });
@@ -27,7 +27,26 @@ const JoinAUserToClub = async (userId, clubId) => {
   });
 
   return join;
-
 };
 
-module.exports = { createClub, findClubById, JoinAUserToClub };
+const findUserClubById = async (userId, clubId) => {
+  const join = await prisma.userClub.findUnique({
+    where: {
+      userId_clubId: {
+        userId: userId,
+        clubId: clubId,
+      },
+    },
+  });
+
+  if (!join) {
+    throw new AuthorizationError("Você não é cadastrado nesse clube");
+  }
+};
+
+module.exports = {
+  createClub,
+  findClubById,
+  JoinAUserToClub,
+  findUserClubById,
+};
