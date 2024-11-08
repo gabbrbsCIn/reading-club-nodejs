@@ -1,6 +1,5 @@
 const { sendErrorResponse } = require("../utils/messages/messages");
-const { extractTokenFromHeader } = require("../utils/formatters/formatters");
-const { verifyJWTToken } = require("../utils/validators/validators");
+const { extractTokenFromHeader, verifyJWTToken } = require("../utils/token/token");
 
 const authToken = async (req, res, next) => {
   try {

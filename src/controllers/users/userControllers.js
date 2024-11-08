@@ -6,8 +6,9 @@ const {
 const {
   createUser,
   userAuthenticate,
-  generateJWTToken,
 } = require("../../services/users/userServices");
+
+const { generateJWTToken } = require("../../utils/token/token");
 
 const register = async (req, res) => {
   try {
