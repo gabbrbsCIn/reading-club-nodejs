@@ -29,7 +29,7 @@ model Club {
   id           String       @id @default(uuid())
   name         String
   description  String?
-  users        UserClub[]
+  users        UserClub[]   
   readingLists ReadingList[]
   createdAt    DateTime     @default(now())
   updatedAt    DateTime     @updatedAt
@@ -39,8 +39,8 @@ model UserClub {
   userId String
   clubId String
 
-  user User @relation(fields: [userId], references: [id])
-  club Club @relation(fields: [clubId], references: [id])
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  club Club @relation(fields: [clubId], references: [id], onDelete: Cascade)
 
   @@id([userId, clubId]) 
   @@unique([userId, clubId]) 
