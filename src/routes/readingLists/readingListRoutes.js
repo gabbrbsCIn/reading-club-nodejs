@@ -24,6 +24,13 @@ router.delete(
   readingListController.destroy
 );
 
+router.patch(
+  "/list/:id/book/:bookId",
+  authToken,
+  isListJoined,
+  readingListController.updateStatus
+);
+
 router.delete("/list/:id/book/:bookId", authToken, isListJoined, readingListController.deleteBook);
 
 module.exports = router;

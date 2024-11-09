@@ -1,3 +1,4 @@
+const res = require("express/lib/response");
 const {
   findBookById,
   addBookToList,
@@ -7,6 +8,8 @@ const {
   createReadingList,
   updateReadingList,
   deleteReadingList,
+  updateReadingStatus,
+  findReadingListById,
 } = require("../../services/readingLists/readingListServices");
 const {
   sendSuccessResponse,
@@ -14,6 +17,7 @@ const {
 } = require("../../utils/messages/messages");
 const {
   validateListDataRequest,
+  validateStatusDataRequest,
 } = require("../../utils/validators/validators");
 
 const register = async (req, res) => {
@@ -86,7 +90,7 @@ const deleteBook = async (req, res) => {
   try {
     const listId = req.params.id;
     const bookId = req.params.bookId;
-    await findBookById(bookId);
+    await findReadingListById(listId, bookId);
     const bookList = await deleteBookFromAList(listId, bookId);
 
     const response = { data: bookList, message: "Livro deletado da lista" };
@@ -97,4 +101,20 @@ const deleteBook = async (req, res) => {
   }
 };
 
-module.exports = { register, update, destroy, addBook, deleteBook };
+const updateStatus = async (req, res) => {
+
+  try {
+    const statusData = req.body;
+    const listId = req.params.id;
+    const bookId = req.params.bookId;
+    await findReadingListById(listId, bookId);
+    validateStatusDataRequest(statusData);
+    await updateReadingStatus(listId, bookId, statusData.status);
+    sendSuccessResponse(res, { message: "Status atualizado com sucesso" });
+  } catch (error) {
+    console.log(error);
+    sendErrorResponse(res, error);
+  }
+}
+
+module.exports = { register, update, destroy, addBook, deleteBook, updateStatus };
