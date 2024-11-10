@@ -9,6 +9,8 @@ const {
   JoinAUserToClub,
   updateClub,
   deleteClubById,
+  getAllClubs,
+  getClubsReadingAverage,
 } = require("../../services/clubs/clubServices");
 
 const {
@@ -19,7 +21,7 @@ const register = async (req, res) => {
   try {
     const clubData = req.body;
     const data = validateClubDataRequest(clubData);
-   const club = await createClub(data);
+    const club = await createClub(data);
     const response = { data: club, message: "Clube criado com sucesso" };
     sendSuccessResponse(res, response);
   } catch (error) {
@@ -70,9 +72,23 @@ const destroy = async (req, res) => {
   }
 };
 
+
+const getAverage = async (req, res) => {
+  try {
+    const club = await getAllClubs()
+    const average = await getClubsReadingAverage(club);
+    const response = { data: average, message: "Média de leitura dos clubes coletada com sucesso." };
+    sendSuccessResponse(res, response);
+  } catch (error) {
+    console.log(error);
+    sendErrorResponse(res, error);
+  }
+}
+
 module.exports = {
   register,
   joinClub,
   update,
   destroy,
+  getAverage,
 };
