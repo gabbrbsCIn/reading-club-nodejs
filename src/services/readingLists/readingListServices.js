@@ -1,5 +1,5 @@
 const prisma = require("../../../prisma/prismaClient");
-const { AuthorizationError } = require("../../errors/errors");
+const { AuthorizationError, NotFoundError } = require("../../errors/errors");
 
 const createReadingList = async (list, clubId) => {
   const readingList = await prisma.readingList.create({
@@ -52,9 +52,78 @@ const deleteReadingList = async (listId) => {
 
   return readingList;
 };
+
+const findReadingListBookById = async (listId, bookId) => {
+  const bookList = await prisma.readingListBook.findUnique({
+    where: {
+      readingListId_bookId: {
+        readingListId: listId,
+        bookId: bookId,
+      },
+    },
+  })
+
+  if (!bookList) {
+    throw new NotFoundError("Livro não encontrado na lista");
+  }
+
+  return bookList;
+
+};
+
+const findReadingListById = async (listId) => {
+  const readingList = await prisma.readingList.findUnique({
+    where: {
+      id: listId,
+    },
+  });
+
+  if (!readingList) {
+    throw new NotFoundError("Lista de leitura não encontrada");
+  }
+
+  return readingList;
+};
+
+const findBooksByReadingListId = async (listId) => {
+  const books = await prisma.readingListBook.findMany({
+    where: {
+      readingListId: listId,
+    },
+    include: {
+      book: true,
+    },
+  });
+
+  return books;
+};
+
+const updateReadingStatus = async (listId, bookId, status) => {
+  const readingListBook = await prisma.readingListBook.update({
+    where: {
+      readingListId_bookId: {
+        bookId: bookId,
+        readingListId: listId,
+      },
+    },
+    data: {
+      status: status,
+    },
+  })
+
+  if (!readingListBook) {
+    throw new NotFoundError("Livro não encontrado na lista");
+  }
+
+  return readingListBook;
+}
 module.exports = {
   createReadingList,
   findClubIdByListId,
   updateReadingList,
   deleteReadingList,
+  updateReadingStatus,
+  findReadingListById,
+  findReadingListBookById,
+  findBooksByReadingListId
 };

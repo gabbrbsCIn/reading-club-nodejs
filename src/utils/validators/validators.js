@@ -58,7 +58,28 @@ const validateListDataRequest = (data) => {
 const validateBookDataRequest = (data) => {
   if (!data.title || !data.author) {
     throw new ValidationError("Dados não preenchidos ou incompletos");
-  } 
+  }
+  return true;
+};
+
+const validateStatusDataRequest = (data) => {
+  if (!data.status) {
+    throw new ValidationError("Dados não preenchidos ou incompletos");
+  }
+
+  if (data.status !== "completed" && data.status !== "reading" && data.status !== "to-read") {
+    throw new ValidationError("Status inválido. Deve ser 'completed', 'reading' ou 'to-read'");
+  }
+  return true;
+}
+
+const validateReviewDataRequest = (data) => {
+  if (data.score === undefined || data.content === undefined) {
+    throw new ValidationError("Dados não preenchidos ou incompletos");
+  }
+  if (data.score < 0 || data.score > 5) {
+    throw new ValidationError("Nota deve ser entre 0 e 5");
+  }
   return true;
 };
 
@@ -68,5 +89,7 @@ module.exports = {
   verifyPassword,
   validateClubDataRequest,
   validateListDataRequest,
-  validateBookDataRequest
+  validateBookDataRequest,
+  validateStatusDataRequest,
+  validateReviewDataRequest,
 };

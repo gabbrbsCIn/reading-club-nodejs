@@ -1,3 +1,4 @@
+const res = require("express/lib/response");
 const {
   findBookById,
   addBookToList,
@@ -7,6 +8,10 @@ const {
   createReadingList,
   updateReadingList,
   deleteReadingList,
+  updateReadingStatus,
+  findReadingListBookById,
+  findReadingListById,
+  findBooksByReadingListId,
 } = require("../../services/readingLists/readingListServices");
 const {
   sendSuccessResponse,
@@ -14,6 +19,7 @@ const {
 } = require("../../utils/messages/messages");
 const {
   validateListDataRequest,
+  validateStatusDataRequest,
 } = require("../../utils/validators/validators");
 
 const register = async (req, res) => {
@@ -86,7 +92,7 @@ const deleteBook = async (req, res) => {
   try {
     const listId = req.params.id;
     const bookId = req.params.bookId;
-    await findBookById(bookId);
+    await findReadingListBookById(listId, bookId);
     const bookList = await deleteBookFromAList(listId, bookId);
 
     const response = { data: bookList, message: "Livro deletado da lista" };
@@ -97,4 +103,35 @@ const deleteBook = async (req, res) => {
   }
 };
 
-module.exports = { register, update, destroy, addBook, deleteBook };
+const updateStatus = async (req, res) => {
+
+  try {
+    const statusData = req.body;
+    const listId = req.params.id;
+    const bookId = req.params.bookId;
+    await findReadingListBookById(listId, bookId);
+    validateStatusDataRequest(statusData);
+    await updateReadingStatus(listId, bookId, statusData.status);
+    sendSuccessResponse(res, { message: "Status atualizado com sucesso" });
+  } catch (error) {
+    console.log(error);
+    sendErrorResponse(res, error);
+  }
+}
+
+const getBooksFromAList = async (req, res) => {
+  try {
+    const listId = req.params.id;
+    const readingList = await findBooksByReadingListId(listId);
+    const response = {
+      data: readingList,
+      message: "Livros da lista de leituta coletados com sucesso",
+    };
+    sendSuccessResponse(res, response);
+  } catch (error) {
+    console.log(error);
+    sendErrorResponse(res, error);
+  }
+}
+
+module.exports = { register, update, destroy, addBook, deleteBook, updateStatus, getBooksFromAList };
