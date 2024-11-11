@@ -9,7 +9,9 @@ const {
   updateReadingList,
   deleteReadingList,
   updateReadingStatus,
+  findReadingListBookById,
   findReadingListById,
+  findBooksByReadingListId,
 } = require("../../services/readingLists/readingListServices");
 const {
   sendSuccessResponse,
@@ -90,7 +92,7 @@ const deleteBook = async (req, res) => {
   try {
     const listId = req.params.id;
     const bookId = req.params.bookId;
-    await findReadingListById(listId, bookId);
+    await findReadingListBookById(listId, bookId);
     const bookList = await deleteBookFromAList(listId, bookId);
 
     const response = { data: bookList, message: "Livro deletado da lista" };
@@ -107,7 +109,7 @@ const updateStatus = async (req, res) => {
     const statusData = req.body;
     const listId = req.params.id;
     const bookId = req.params.bookId;
-    await findReadingListById(listId, bookId);
+    await findReadingListBookById(listId, bookId);
     validateStatusDataRequest(statusData);
     await updateReadingStatus(listId, bookId, statusData.status);
     sendSuccessResponse(res, { message: "Status atualizado com sucesso" });
@@ -117,4 +119,19 @@ const updateStatus = async (req, res) => {
   }
 }
 
-module.exports = { register, update, destroy, addBook, deleteBook, updateStatus };
+const getBooksFromAList = async (req, res) => {
+  try {
+    const listId = req.params.id;
+    const readingList = await findBooksByReadingListId(listId);
+    const response = {
+      data: readingList,
+      message: "Livros da lista de leituta coletados com sucesso",
+    };
+    sendSuccessResponse(res, response);
+  } catch (error) {
+    console.log(error);
+    sendErrorResponse(res, error);
+  }
+}
+
+module.exports = { register, update, destroy, addBook, deleteBook, updateStatus, getBooksFromAList };
