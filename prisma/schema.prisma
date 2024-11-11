@@ -79,7 +79,7 @@ model ReadingListBook {
 model Review {
   id        String   @id @default(uuid())
   content   String
-  score     Int
+  score     Float
   user      User     @relation(fields: [userId], references: [id])
   userId    String
   book      Book     @relation(fields: [bookId], references: [id])

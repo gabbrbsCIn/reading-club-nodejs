@@ -32,11 +32,32 @@ const deleteReview = async (reviewId) => {
             id: reviewId
         }
     })
-    if(!review) {
+    if (!review) {
         throw new ValidationError("Revisão não encontrada")
     }
     return review;
+};
+
+const getBooksAverageReview = async (bookId) => {
+    const reviews = await prisma.review.findMany({
+        where: {
+            bookId,
+        },
+        include: {
+            book: true,
+        }
+    });
+    const book = reviews[0].book;
+    const totalReviews = reviews.length;
+    if (totalReviews === 0) {
+        return 0;
+    }
+
+    const scoreSum = reviews.reduce((acc, review) => acc + review.score, 0);
+    const averageReview = scoreSum / totalReviews;
+
+    return { book, averageReview };
 }
 
 
-module.exports = { createReview, findReviewByUserBookId, deleteReview }	
+module.exports = { createReview, findReviewByUserBookId, deleteReview, getBooksAverageReview }	
