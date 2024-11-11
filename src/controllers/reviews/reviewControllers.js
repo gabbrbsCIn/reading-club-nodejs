@@ -1,5 +1,5 @@
 const { findBookById } = require("../../services/books/bookServices");
-const { createReview, findReviewByUserBookId, deleteReview } = require("../../services/reviews/reviewServices");
+const { createReview, findReviewByUserBookId, deleteReview, getBooksAverageReview } = require("../../services/reviews/reviewServices");
 const { sendErrorResponse, sendSuccessResponse } = require("../../utils/messages/messages");
 const { validateReviewDataRequest } = require("../../utils/validators/validators");
 
@@ -34,4 +34,16 @@ const destroy = async (req, res) => {
     }
 }
 
-module.exports = { register, destroy }
+const getBookAverage = async (req, res) => {
+    try {
+        const bookId = req.params.bookId;
+        const bookAverage = await getBooksAverageReview(bookId);
+        const response = { data: bookAverage, message: "Média coletada com sucesso" }
+        sendSuccessResponse(res, response);
+    } catch (error) {
+        console.log(error);
+        sendErrorResponse(res, error);
+    }
+}
+
+module.exports = { register, destroy, getBookAverage }
