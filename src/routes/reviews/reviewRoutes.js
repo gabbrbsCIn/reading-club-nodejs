@@ -6,5 +6,6 @@ const router = Router()
 
 router.post("/review/:bookId", authToken, reviewController.register);
 router.delete("/review/:reviewId", authToken, reviewController.destroy);
+router.get("/review/:bookId", reviewController.getBookAverage);
 
 module.exports = router;

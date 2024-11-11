@@ -1,11 +1,13 @@
+const { checkTokenInBlackList } = require("../services/users/userServices");
 const { sendErrorResponse } = require("../utils/messages/messages");
 const { extractTokenFromHeader, verifyJWTToken } = require("../utils/token/token");
 
 const authToken = async (req, res, next) => {
   try {
     const token = extractTokenFromHeader(req.headers);
-    const decodeToken = verifyJWTToken(token);
-    req.user = decodeToken;
+    await checkTokenInBlackList(token);
+    const decodedToken = verifyJWTToken(token);
+    req.user = decodedToken;
     next();
   } catch (error) {
     console.log(error);

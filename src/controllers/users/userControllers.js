@@ -8,9 +8,10 @@ const {
   userAuthenticate,
   updateUserById,
   deleteUserById,
+  addTokenToBlacklist,
 } = require("../../services/users/userServices");
 
-const { generateJWTToken } = require("../../utils/token/token");
+const { generateJWTToken, extractTokenFromHeader } = require("../../utils/token/token");
 
 const register = async (req, res) => {
   try {
@@ -73,9 +74,23 @@ const destroy = async (req, res) => {
   }
 };
 
+const logout = async (req, res) => {
+  try {
+    const token = extractTokenFromHeader(req.headers);
+    if (token) {
+      await addTokenToBlacklist(token);
+    }
+    sendSuccessResponse(res, { message: "Usuário deslogado com sucesso" });
+  } catch (error) {
+    console.log(error);
+    sendErrorResponse(res, error);
+  }
+}
+
 module.exports = {
   register,
   login,
   update,
   destroy,
+  logout
 };
