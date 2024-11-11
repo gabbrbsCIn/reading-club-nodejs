@@ -26,4 +26,17 @@ const createReview = async (reviewData, userId, bookId) => {
     return review;
 }
 
-module.exports = { createReview, findReviewByUserBookId }	
+const deleteReview = async (reviewId) => {
+    const review = await prisma.review.delete({
+        where: {
+            id: reviewId
+        }
+    })
+    if(!review) {
+        throw new ValidationError("Revisão não encontrada")
+    }
+    return review;
+}
+
+
+module.exports = { createReview, findReviewByUserBookId, deleteReview }	
