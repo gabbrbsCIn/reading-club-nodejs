@@ -119,6 +119,19 @@ const getClubsReadingAverage = async (clubs) => {
   return averages;
 };
 
+
+const getAllReadingListsById = async (clubId) => {
+  const readingLists = await prisma.readingList.findMany({
+    where: {
+      clubId: clubId,
+    },
+  });
+  if (!readingLists) {
+    throw new NotFoundError("Clube não encontrado");
+  }
+
+  return readingLists;
+};
 module.exports = {
   createClub,
   findClubById,
@@ -128,4 +141,5 @@ module.exports = {
   deleteClubById,
   getAllClubs,
   getClubsReadingAverage,
+  getAllReadingListsById,
 };
