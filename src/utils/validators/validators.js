@@ -73,6 +73,16 @@ const validateStatusDataRequest = (data) => {
   return true;
 }
 
+const validateReviewDataRequest = (data) => {
+  if (data.score === undefined || data.content === undefined) {
+    throw new ValidationError("Dados não preenchidos ou incompletos");
+  }
+  if (data.score < 0 || data.score > 5) {
+    throw new ValidationError("Nota deve ser entre 0 e 5");
+  }
+  return true;
+};
+
 module.exports = {
   validateDataRequest,
   generateHashPassword,
@@ -80,5 +90,6 @@ module.exports = {
   validateClubDataRequest,
   validateListDataRequest,
   validateBookDataRequest,
-  validateStatusDataRequest
+  validateStatusDataRequest,
+  validateReviewDataRequest,
 };
