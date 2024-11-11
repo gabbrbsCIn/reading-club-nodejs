@@ -1,5 +1,5 @@
 const prisma = require("../../../prisma/prismaClient")
-const { ValidationError } = require("../../errors/errors")
+const { ValidationError, NotFoundError } = require("../../errors/errors")
 
 const findReviewByUserBookId = async (userId, bookId) => {
     const review = await prisma.review.findFirst({
@@ -47,6 +47,9 @@ const getBooksAverageReview = async (bookId) => {
             book: true,
         }
     });
+    if (reviews.length === 0) {
+        throw new NotFoundError("Não há revisões para esse livro");
+    }
     const book = reviews[0].book;
     const totalReviews = reviews.length;
     if (totalReviews === 0) {
