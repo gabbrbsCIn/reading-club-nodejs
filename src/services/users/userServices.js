@@ -5,6 +5,9 @@ const {
   AuthorizationError,
   ValidationError,
 } = require("../../errors/errors");
+
+const client = require("../../../redis/redisClient");
+const { getTokenRemainingTime } = require("../../utils/token/token");
 const {
   generateHashPassword,
   verifyPassword,
@@ -66,10 +69,25 @@ const deleteUserById = async (userId) => {
   return user;
 };
 
+const addTokenToBlacklist = async (token) => {
+  const tokenRemainingTime = getTokenRemainingTime(token);
+  await client.set(token, "revoked", "EXP", tokenRemainingTime);
+  return token;
+}
+const checkTokenInBlackList = async (token) => {
+  const isTokenInBlackList = await client.get(token);
+  if (isTokenInBlackList) {
+    throw new AuthorizationError("Token inválido");
+  }
+  return isTokenInBlackList;
+};
+
 module.exports = {
   createUser,
   userAuthenticate,
   findUserByEmail,
   updateUserById,
   deleteUserById,
+  addTokenToBlacklist,
+  checkTokenInBlackList
 };

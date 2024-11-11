@@ -39,4 +39,10 @@ const generateJWTToken = (user) => {
   return token;
 };
 
-module.exports = { extractTokenFromHeader, verifyJWTToken, generateJWTToken };
+const getTokenRemainingTime = (token) => {
+  const decoded = jwt.decode(token);
+  const currentTime = Math.floor(Date.now() / 1000);
+  return decoded.exp - currentTime;
+};
+
+module.exports = { extractTokenFromHeader, verifyJWTToken, generateJWTToken, getTokenRemainingTime };
