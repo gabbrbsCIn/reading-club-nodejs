@@ -15,24 +15,24 @@ datasource db {
 }
 
 model User {
-  id        String       @id @default(uuid())
-  username  String       @unique
-  email     String       @unique
+  id        String     @id @default(uuid())
+  username  String     @unique
+  email     String     @unique
   password  String
   clubs     UserClub[]
   reviews   Review[]
-  createdAt DateTime     @default(now())
-  updatedAt DateTime     @updatedAt
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
 }
 
 model Club {
-  id           String       @id @default(uuid())
+  id           String        @id @default(uuid())
   name         String
   description  String?
-  users        UserClub[]   
+  users        UserClub[]
   readingLists ReadingList[]
-  createdAt    DateTime     @default(now())
-  updatedAt    DateTime     @updatedAt
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 }
 
 model UserClub {
@@ -42,48 +42,50 @@ model UserClub {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   club Club @relation(fields: [clubId], references: [id], onDelete: Cascade)
 
-  @@id([userId, clubId]) 
-  @@unique([userId, clubId]) 
+  @@id([userId, clubId])
+  @@unique([userId, clubId])
 }
 
 model ReadingList {
-  id        String         @id @default(uuid())
+  id        String            @id @default(uuid())
   name      String
-  club      Club           @relation(fields: [clubId], references: [id])
+  club      Club              @relation(fields: [clubId], references: [id])
   clubId    String
   books     ReadingListBook[]
-  createdAt DateTime       @default(now())
-  updatedAt DateTime       @updatedAt
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
 }
 
 model Book {
-  id           String         @id @default(uuid())
+  id           String            @id @default(uuid())
   title        String
   author       String
   readingLists ReadingListBook[]
   reviews      Review[]
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
 }
 
 model ReadingListBook {
   readingListId String
   bookId        String
-  status        String 
-  readingList ReadingList @relation(fields: [readingListId], references: [id])
-  book        Book        @relation(fields: [bookId], references: [id])
+  status        String
+  readingList   ReadingList @relation(fields: [readingListId], references: [id])
+  book          Book        @relation(fields: [bookId], references: [id])
 
-  @@id([readingListId, bookId]) 
+  @@id([readingListId, bookId])
 }
 
 model Review {
-  id        String    @id @default(uuid())
+  id        String   @id @default(uuid())
   content   String
   score     Int
-  user      User      @relation(fields: [userId], references: [id])
+  user      User     @relation(fields: [userId], references: [id])
   userId    String
-  book      Book      @relation(fields: [bookId], references: [id])
+  book      Book     @relation(fields: [bookId], references: [id])
   bookId    String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, bookId])
 }
