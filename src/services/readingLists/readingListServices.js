@@ -53,7 +53,7 @@ const deleteReadingList = async (listId) => {
   return readingList;
 };
 
-const findReadingListById = async (listId, bookId) => {
+const findReadingListBookById = async (listId, bookId) => {
   const bookList = await prisma.readingListBook.findUnique({
     where: {
       readingListId_bookId: {
@@ -69,6 +69,33 @@ const findReadingListById = async (listId, bookId) => {
 
   return bookList;
 
+};
+
+const findReadingListById = async (listId) => {
+  const readingList = await prisma.readingList.findUnique({
+    where: {
+      id: listId,
+    },
+  });
+
+  if (!readingList) {
+    throw new NotFoundError("Lista de leitura não encontrada");
+  }
+
+  return readingList;
+};
+
+const findBooksByReadingListId = async (listId) => {
+  const books = await prisma.readingListBook.findMany({
+    where: {
+      readingListId: listId,
+    },
+    include: {
+      book: true,
+    },
+  });
+
+  return books;
 };
 
 const updateReadingStatus = async (listId, bookId, status) => {
@@ -97,4 +124,6 @@ module.exports = {
   deleteReadingList,
   updateReadingStatus,
   findReadingListById,
+  findReadingListBookById,
+  findBooksByReadingListId
 };
